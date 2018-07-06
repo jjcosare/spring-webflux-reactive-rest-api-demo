@@ -7,30 +7,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
- * Created by rajeevkumarsingh on 08/09/17.
+ * Created by jjcosare on 7/5/18.
  */
 @Data
 @NoArgsConstructor
-@Document(collection = "tweets")
-public class Tweet {
+@Document
+public class User {
 
     @Id
     private String id;
 
     @NotBlank
-    @Size(max = 140)
-    private String text;
+    private String username;
 
     @NotNull
     private Date createdAt = new Date();
-
-    public Tweet(String text) {
-        this.id = id;
-        this.text = text;
-    }
 
 }
