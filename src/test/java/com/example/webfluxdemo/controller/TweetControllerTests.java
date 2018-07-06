@@ -1,4 +1,4 @@
-package com.example.webfluxdemo;
+package com.example.webfluxdemo.controller;
 
 import com.example.webfluxdemo.model.Tweet;
 import com.example.webfluxdemo.repository.TweetRepository;
@@ -16,7 +16,7 @@ import java.util.Collections;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class WebfluxDemoApplicationTests {
+public class TweetControllerTests {
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -28,7 +28,7 @@ public class WebfluxDemoApplicationTests {
 	public void testCreateTweet() {
 		Tweet tweet = new Tweet("This is a Test Tweet");
 
-		webTestClient.post().uri("/tweets")
+		webTestClient.post().uri("/tweet")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .body(Mono.just(tweet), Tweet.class)
@@ -42,7 +42,7 @@ public class WebfluxDemoApplicationTests {
 
 	@Test
     public void testGetAllTweets() {
-	    webTestClient.get().uri("/tweets")
+	    webTestClient.get().uri("/tweet")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
@@ -55,7 +55,7 @@ public class WebfluxDemoApplicationTests {
         Tweet tweet = tweetRepository.save(new Tweet("Hello, World!")).block();
 
         webTestClient.get()
-                .uri("/tweets/{id}", Collections.singletonMap("id", tweet.getId()))
+                .uri("/tweet/{id}", Collections.singletonMap("id", tweet.getId()))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -70,7 +70,7 @@ public class WebfluxDemoApplicationTests {
         Tweet newTweetData = new Tweet("Updated Tweet");
 
         webTestClient.put()
-                .uri("/tweets/{id}", Collections.singletonMap("id", tweet.getId()))
+                .uri("/tweet/{id}", Collections.singletonMap("id", tweet.getId()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .body(Mono.just(newTweetData), Tweet.class)
@@ -86,7 +86,7 @@ public class WebfluxDemoApplicationTests {
 	    Tweet tweet = tweetRepository.save(new Tweet("To be deleted")).block();
 
 	    webTestClient.delete()
-                .uri("/tweets/{id}", Collections.singletonMap("id",  tweet.getId()))
+                .uri("/tweet/{id}", Collections.singletonMap("id",  tweet.getId()))
                 .exchange()
                 .expectStatus().isOk();
     }
