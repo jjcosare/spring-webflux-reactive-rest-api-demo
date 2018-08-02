@@ -1,7 +1,9 @@
 package com.example.webfluxdemo.controller;
 
 import com.example.webfluxdemo.model.Tweet;
+import com.example.webfluxdemo.model.User;
 import com.example.webfluxdemo.repository.TweetRepository;
+import com.example.webfluxdemo.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,34 +18,34 @@ import java.util.Collections;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TweetControllerTests {
+public class UserControllerTests {
 
 	@Autowired
 	private WebTestClient webTestClient;
 
 	@Autowired
-    TweetRepository repository;
+    UserRepository repository;
 
 	@Test
 	public void testCreate() {
-	    final String TWEET_TEXT = "This is a Test Tweet";
-		Tweet model = new Tweet(TWEET_TEXT);
+        final String EMAIL = "firstname1@company.com";
+		User model = new User(EMAIL);
 
-		webTestClient.post().uri("/tweet")
+		webTestClient.post().uri("/user")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(model), Tweet.class)
+                .body(Mono.just(model), User.class)
 				.exchange()
 				.expectStatus().isOk()
 				.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
 				.expectBody()
                 .jsonPath("$.id").isNotEmpty()
-                .jsonPath("$.text").isEqualTo(TWEET_TEXT);
+                .jsonPath("$.email").isEqualTo(EMAIL);
 	}
 
 	@Test
     public void testGetAll() {
-	    webTestClient.get().uri("/tweet")
+	    webTestClient.get().uri("/user")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
@@ -53,10 +55,10 @@ public class TweetControllerTests {
 
     @Test
     public void testGetSingle() {
-        Tweet model = repository.save(new Tweet("Hello, World!")).block();
+        User model = repository.save(new User("firstname2@company.com")).block();
 
         webTestClient.get()
-                .uri("/tweet/{id}", Collections.singletonMap("id", model.getId()))
+                .uri("/user/{id}", Collections.singletonMap("id", model.getId()))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -66,31 +68,30 @@ public class TweetControllerTests {
 
     @Test
     public void testUpdate() {
-        Tweet model = repository.save(new Tweet("Initial Tweet")).block();
+        User model = repository.save(new User("firstname3_1@company.com")).block();
 
-        final String TWEET_TEXT_UPDATE = "Updated Tweet";
-        Tweet form = new Tweet(TWEET_TEXT_UPDATE);
+        final String EMAIL_UPDATED = "firstname3_2@company.com";
+        User form = new User(EMAIL_UPDATED);
 
         webTestClient.put()
-                .uri("/tweet/{id}", Collections.singletonMap("id", model.getId()))
+                .uri("/user/{id}", Collections.singletonMap("id", model.getId()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(form), Tweet.class)
+                .body(Mono.just(form), User.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
-                .jsonPath("$.text").isEqualTo(TWEET_TEXT_UPDATE);
+                .jsonPath("$.email").isEqualTo(EMAIL_UPDATED);
     }
 
     @Test
     public void testDelete() {
-	    Tweet model = repository.save(new Tweet("To be deleted")).block();
+	    User model = repository.save(new User("firstname4@company.com")).block();
 
 	    webTestClient.delete()
-                .uri("/tweet/{id}", Collections.singletonMap("id",  model.getId()))
+                .uri("/user/{id}", Collections.singletonMap("id",  model.getId()))
                 .exchange()
                 .expectStatus().isOk();
     }
-
 }

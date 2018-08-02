@@ -21,9 +21,13 @@ public class User {
     private String id;
 
     @NotBlank
-    private String username;
+    private String email;
 
     @NotNull
     private Date createdAt = new Date();
+
+    public User(String email){
+        this.email = email;
+    }
 
 }

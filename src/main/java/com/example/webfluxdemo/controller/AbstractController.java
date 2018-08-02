@@ -23,12 +23,12 @@ public abstract class AbstractController<S extends AbstractService, M, ID extend
     }
 
     @GetMapping("")
-    public Flux<Tweet> getAll() {
+    public Flux<M> getAll() {
         return service.getAll();
     }
 
     @PostMapping("")
-    public Mono<Tweet> create(@Valid @RequestBody M model) {
+    public Mono<M> create(@Valid @RequestBody M model) {
         return service.save(model);
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractController<S extends AbstractService, M, ID extend
 
     // Tweets are Sent to the client as Server Sent Events
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Tweet> streamAll() {
+    public Flux<M> streamAll() {
         return service.getAll();
     }
 
